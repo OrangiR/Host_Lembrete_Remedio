@@ -46,42 +46,42 @@ class NoticiasAPI {
             {
                 title: "Inovações Tecnológicas Revolucionam o Controle de Medicamentos",
                 description: "Novos aplicativos e dispositivos inteligentes ajudam pacientes a manterem a rotina de remédios em dia, melhorando significativamente a adesão ao tratamento.",
-                urlToImage: "https://via.placeholder.com/300x200/c62828/ffffff?text=Tecnologia+na+Saúde",
+                urlToImage: "https://p2.trrsf.com/image/fget/cf/1200/630/middle/images.terra.com/2025/06/21/1833171499-0420dba5c0e9e4f2-1400x823-2.jpg",
                 url: "#",
                 publishedAt: new Date().toISOString()
             },
             {
                 title: "Médicos Destacam Importância da Vida Saudável na Prevenção",
                 description: "Especialistas enfatizam que hábitos saudáveis, aliados ao uso correto de medicamentos, são fundamentais para a qualidade de vida.",
-                urlToImage: "https://via.placeholder.com/300x200/c62828/ffffff?text=Vida+Saudável",
+                urlToImage: "https://s2-valor.glbimg.com/LwLtAvM_Qgqfs3ezigYq_405e_s=/1200x/smart/filters:cover():strip_icc()/i.s3.glbimg.com/v1/AUTH_63b422c2caee4269b8b34177e8876b93/internal_photos/bs/2025/l/U/edfAknRB2gRKeQtHZBEw/foto15pol-101-bolso-a8.jpg",
                 url: "#",
                 publishedAt: new Date().toISOString()
             },
             {
                 title: "Novos Tratamentos Promissores para Doenças Crônicas",
                 description: "Pesquisas recentes mostram avanços significativos no desenvolvimento de terapias inovadoras para melhorar a saúde e qualidade de vida.",
-                urlToImage: "https://via.placeholder.com/300x200/c62828/ffffff?text=Novos+Tratamentos",
+                urlToImage: "https://www.infomoney.com.br/wp-content/uploads/2025/06/copy_7E5F69A2-AC0E-41F2-8A08-7D1232012CA6.gif?quality=70",
                 url: "#",
                 publishedAt: new Date().toISOString()
             },
             {
                 title: "Importância do Controle de Horários para Medicamentos",
                 description: "Estudos comprovam que seguir rigorosamente os horários de medicação aumenta em 85% a eficácia do tratamento.",
-                urlToImage: "https://via.placeholder.com/300x200/c62828/ffffff?text=Controle+de+Horários",
+                urlToImage: "https://i0.statig.com.br/bancodeimagens/00/y0/9l/00y09lpco4tk7tj75hgzrunc0.jpg",
                 url: "#",
                 publishedAt: new Date().toISOString()
             },
             {
                 title: "Como Aplicativos de Saúde Estão Transformando o Cuidado Pessoal",
                 description: "Ferramentas digitais facilitam o acompanhamento médico e melhoram a comunicação entre pacientes e profissionais de saúde.",
-                urlToImage: "https://via.placeholder.com/300x200/c62828/ffffff?text=Apps+de+Saúde",
+                urlToImage: "https://s1.trrsf.com/update-1698692222/fe/zaz-mod-t360-icons/svg/logos/terra-16x9-borda.png",
                 url: "#",
                 publishedAt: new Date().toISOString()
             },
             {
                 title: "Dicas Essenciais para Não Esquecer de Tomar Remédios",
                 description: "Profissionais da saúde compartilham estratégias eficazes para manter a disciplina no uso de medicamentos diários.",
-                urlToImage: "https://via.placeholder.com/300x200/c62828/ffffff?text=Dicas+Remédios",
+                urlToImage: "https://p2.trrsf.com/image/fget/cf/1200/630/middle/images.terra.com/2025/06/21/1510488736-capa-bons-fluidos-67.png",
                 url: "#",
                 publishedAt: new Date().toISOString()
             }
