@@ -1,0 +1,412 @@
+/* Estilos globais para a página de ajuda */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6; /* Cor de fundo suave */
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header - Consistente com o index.html */
+header {
+    background-color: #fff;
+    color: #2c3e50;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.img-logo {
+    display: flex;
+    align-items: center;
+}
+
+.img-logo img {
+    height: 40px; /* Tamanho da logo ajustado para ser similar ao index */
+    margin-right: 10px;
+}
+
+.img-logo a {
+    text-decoration: none; 
+    color: inherit; 
+}
+
+.text-logo {
+    font-size: 1.5em; /* Tamanho da fonte ajustado para ser similar ao index */
+    font-weight: bold;
+}
+
+.botao-link {
+    background-color: #3498db; /* Azul primário do index */
+    color: #fff;
+    padding: 0.7rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    font-size: 0.9em;
+}
+
+.botao-link:hover {
+    background-color: #2980b9; /* Azul mais escuro no hover */
+}
+
+/* Main Container - Layout e cards */
+.main-container {
+    display: flex;
+    padding: 2rem;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.caixa-esquerda,
+.caixa-direita {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Sombra suave */
+}
+
+.caixa-esquerda {
+    flex: 3; /* Mais espaço para o conteúdo principal */
+}
+
+.caixa-esquerda h2,
+.caixa-direita h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #eee; /* Linha divisória */
+    padding-bottom: 0.5rem;
+}
+
+.caixa-esquerda p {
+    color: #555;
+    margin-bottom: 1em;
+}
+
+.caixa-esquerda ul {
+    list-style: disc; 
+    margin-left: 20px;
+    color: #555;
+    margin-bottom: 1em;
+}
+
+.caixa-esquerda ul li {
+    margin-bottom: 0.5em;
+}
+
+.caixa-direita {
+    flex: 2; /* Menos espaço para o formulário */
+}
+
+.info-form {
+    background-color: #f9f9f9; /* Fundo claro para a área de informação do formulário */
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+    color: #777;
+    font-size: 0.9em;
+}
+
+/* Formulário de Contato */
+#formulario-contato {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Espaçamento entre os elementos do formulário */
+}
+
+#formulario-contato label {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 0.2rem;
+}
+
+#formulario-contato input,
+#formulario-contato textarea {
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    width: calc(100% - 1.6rem); /* Ajuste para o padding, garantindo que ocupe 100% */
+    box-sizing: border-box; /* Inclui padding e borda no cálculo do width */
+}
+
+#formulario-contato textarea {
+    resize: vertical; /* Permite redimensionar verticalmente */
+    min-height: 100px;
+}
+
+.submit-button { /* Classe para o botão de enviar */
+    background-color: #27ae60; /* Verde do botão de criar lembrete do index */
+    color: #fff;
+    padding: 0.9rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    align-self: flex-start; /* Alinha o botão à esquerda */
+}
+
+.submit-button:hover {
+    background-color: #219653; /* Verde mais escuro no hover */
+}
+
+/* Mensagens de status do formulário */
+.status-message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.status-message.success {
+    background-color: #d4edda; /* Verde claro */
+    color: #155724; /* Verde escuro */
+    border: 1px solid #c3e6cb;
+}
+
+.status-message.error {
+    background-color: #f8d7da; /* Vermelho claro */
+    color: #721c24; /* Vermelho escuro */
+    border: 1px solid #f5c6cb;
+}
+
+
+/* Footer - Consistente com o index.html */
+.site-footer {
+    background-color: #333;
+    color: #fff;
+    padding: 2rem 0;
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 2rem;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.footer-column h4 {
+    color: #eee;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #555;
+    padding-bottom: 0.5rem;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: #ddd;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #fff;
+}
+
+.footer-bottom {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .caixa-esquerda,
+    .caixa-direita {
+        flex: 1;
+        margin-bottom: 1.5rem;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .img-logo {
+        margin-bottom: 10px;
+    }
+
+    .footer-container {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
+    .submit-button {
+        align-self: stretch; 
+    }
+
+    .fixed-suporte-button {
+        bottom: 20px;
+        right: 20px;
+    }
+
+    .fixed-suporte-button .botao-link {
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+}
+
+/* Cabeçalho */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  background-color: #c62828;
+  flex-wrap: wrap;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 120px; /* Define altura fixa */
+}
+
+.img-logo {
+  display: flex;
+  align-items: center;
+  height: 100%; /* Garante que herda a altura do header */
+  padding-left: 20px; /* Empurra ela um pouco pra direita */
+}
+
+.img-logo img {
+  /* cresce proporcionalmente */
+  height: 100%;             /* ocupa toda a altura do header */
+  max-height: 170px;        /* segurança: nunca passa disso */
+  width: auto;              /* mantém proporção natural  */
+  margin: 0;                /* centralizada verticalmente pelo flex */
+}
+
+/* Botões padrão */
+.botao-link {
+    display: inline-block;
+    background: linear-gradient(145deg, #d84343, #ef5350);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.botao-link:hover {
+    background: linear-gradient(145deg, #b71c1c, #e53935);
+    transform: translateY(-2px) scale(1.04);
+}
+.text-logo {
+  font-family: Helvetica;
+  color: white;
+  font-size: 24px;
+  margin: 0;
+}
+
+/* Rodapé */
+.site-footer {
+    background-color: #c62828;
+    color: white;
+    padding: 40px 0;
+    font-family: Helvetica, Arial, sans-serif;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-column {
+    flex: 1;
+    min-width: 240px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.footer-column h4 {
+    color: #ffcc80;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 204, 128, 0.5);
+    padding-bottom: 10px;
+}
+
+.footer-column h4 i {
+    margin-right: 10px;
+}
+
+.footer-column p {
+    font-size: 0.9em;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 8px;
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-size: 0.9em;
+}
+
+.footer-links a:hover {
+    color: #ffcc80;
+    text-decoration: underline;
+}
+
+.footer-column .fa-solid {
+    margin-right: 8px;
+    color: #ffcc80;
+}
+
+.social-icons a {
+    color: #fff;
+    font-size: 1.5em;
+    margin-right: 15px;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: #ffcc80;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid #b71c1c;
+    margin-top: 20px;
+    font-size: 0.8em;
+    background-color: #a31d1d;
+}

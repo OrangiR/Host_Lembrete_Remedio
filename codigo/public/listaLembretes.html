@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meus Remédios</title>
+  <link rel="stylesheet" href="./assets/css/listaLembrete.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+    }
+
+    .user-info .user-name {
+      font-weight: bold;
+    }
+
+    .logout-btn {
+      background: #d32f2f;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 0.8em;
+      transition: background-color 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #b71c1c;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="img-logo">
+      <a href="/codigo/public/index.html">
+        <img src="/docs/images/logo.remed.jpg" alt="Logotipo da Remedicy" />
+      </a>
+      <h1 class="text-logo">Remedicy</h1>
+    </div>
+    <nav class="infos-mais">
+      <div id="user-status">
+        <!-- Será preenchido via JavaScript -->
+      </div>
+      <a class="botao-link" href="/codigo/public/about.html">Sobre nós</a>
+      <a class="botao-link" href="/codigo/public/ajuda.html">Suporte</a>
+    </nav>
+  </header>
+
+  <div class="main-content">
+    <h1 class="page-title">Meus Remédios</h1>
+    <div style="margin-bottom: 20px;">
+      <a href="criacaoLembrete.html" class="take-medicine-button" style="display: inline-block;" onclick="localStorage.removeItem('lembreteEditando')">Criar Novo</a>
+      
+      <div style="margin-top: 15px;">
+        <label for="filtro-pessoa" style="font-weight: bold; margin-right: 10px;">Filtrar por pessoa:</label>
+        <select id="filtro-pessoa" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; margin-right: 10px;">
+          <option value="todos">Todos</option>
+          <option value="eu">Meus remédios</option>
+          <option value="dependente">Dependentes</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="medicine-list" id="lista-remedios"></div>
+
+    <h2 id="titulo-nao-tomados" style="display: none; margin-top: 40px; color: #d32f2f;">Não Tomados (Atrasados)</h2>
+    <div class="medicine-list" id="lista-nao-tomados"></div>
+
+    <h2 id="titulo-tomados" style="display: none; margin-top: 40px;">Já Tomados</h2>
+    <div class="medicine-list" id="lista-tomados"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const listaRemedios = document.getElementById("lista-remedios");
+      const listaTomados = document.getElementById("lista-tomados");
+      const tituloTomados = document.getElementById("titulo-tomados");
+      const listaNaoTomados = document.getElementById("lista-nao-tomados");
+      const tituloNaoTomados = document.getElementById("titulo-nao-tomados");
+
+      let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
+      let tomados = JSON.parse(localStorage.getItem("lembretesTomados")) || [];
+      let naoTomados = JSON.parse(localStorage.getItem("lembretesNaoTomados")) || [];
+
+      // Função para verificar se um lembrete está atrasado
+      function isAtrasado(lembrete) {
+        const hoje = new Date();
+        const dataLembrete = new Date(lembrete.dataCalendario + 'T' + lembrete.horario);
+        return dataLembrete < hoje;
+      }
+
+      // Função para mover lembretes atrasados para "não tomados"
+      function verificarAtrasados() {
+        const agora = new Date();
+        const lembretesAtualizados = [];
+        
+        lembretes.forEach((lembrete, index) => {
+          const dataHorarioLembrete = new Date(lembrete.dataCalendario + 'T' + lembrete.horario);
+          
+          if (dataHorarioLembrete < agora) {
+            // Lembrete está atrasado, mover para não tomados
+            const lembreteAtrasado = { ...lembrete, statusAtrasado: true };
+            naoTomados.push(lembreteAtrasado);
+          } else {
+            // Lembrete ainda está no horário
+            lembretesAtualizados.push(lembrete);
+          }
+        });
+        
+        lembretes = lembretesAtualizados;
+        localStorage.setItem("lembretes", JSON.stringify(lembretes));
+        localStorage.setItem("lembretesNaoTomados", JSON.stringify(naoTomados));
+      }
+
+      // Função para limpar lembretes antigos (após 3 dias)
+      function limparLembretesAntigos() {
+        const agora = new Date();
+        const tresDiasAtras = new Date(agora.getTime() - (3 * 24 * 60 * 60 * 1000));
+
+        // Limpar lembretes tomados antigos
+        const tomadosAtualizados = tomados.filter(lembrete => {
+          if (lembrete.dataTomaado) {
+            const dataTomado = new Date(lembrete.dataTomaado);
+            return dataTomado > tresDiasAtras;
+          }
+          // Se não tem data de tomado, verificar pela data original
+          const dataOriginal = new Date(lembrete.dataCalendario + 'T' + lembrete.horario);
+          return dataOriginal > tresDiasAtras;
+        });
+
+        // Limpar lembretes não tomados antigos
+        const naoTomadosAtualizados = naoTomados.filter(lembrete => {
+          const dataOriginal = new Date(lembrete.dataCalendario + 'T' + lembrete.horario);
+          return dataOriginal > tresDiasAtras;
+        });
+
+        // Atualizar apenas se houve mudanças
+        if (tomadosAtualizados.length !== tomados.length) {
+          tomados = tomadosAtualizados;
+          localStorage.setItem("lembretesTomados", JSON.stringify(tomados));
+        }
+
+        if (naoTomadosAtualizados.length !== naoTomados.length) {
+          naoTomados = naoTomadosAtualizados;
+          localStorage.setItem("lembretesNaoTomados", JSON.stringify(naoTomados));
+        }
+      }
+
+      function renderizarLista(lembretesFiltrados = null) {
+        const listaMostrar = lembretesFiltrados || lembretes;
+        listaRemedios.innerHTML = "";
+        
+        listaMostrar.forEach((lembrete, index) => {
+          const indexOriginal = lembretesFiltrados ? lembretes.findIndex(l => l === lembrete) : index;
+          const item = document.createElement("div");
+          item.className = "medicine-item";
+          item.dataset.remedioId = indexOriginal;
+
+          const pessoaTexto = lembrete.pessoa === 'eu' ? 'Para mim' : 
+                             lembrete.pessoa === 'dependente' ? `Para ${lembrete.nomeDependente}` : 'Não definido';
+
+          // Verificar se está atrasado
+          const estaAtrasado = isAtrasado(lembrete);
+          const classeAtraso = estaAtrasado ? ' atrasado' : '';
+          const botaoTexto = estaAtrasado ? '⚠️ ATRASADO - Tomar Agora' : 'Tomar';
+          const corBotao = estaAtrasado ? 'background-color: #ff5722; animation: pulse 2s infinite;' : '';
+
+          item.className += classeAtraso;
+
+          item.innerHTML = `
+            <div class="medicine-details">
+              <div class="medicine-name">${lembrete.nome}</div>
+              <div class="medicine-person" style="color: #007bff; font-weight: bold; margin: 5px 0;">${pessoaTexto}</div>
+              <div class="medicine-dosage">${lembrete.descricao || "Sem descrição"}</div>
+              <div class="medicine-schedule">Tomar: ${lembrete.comoTomar || "sem instrução"} às ${lembrete.horario} - Data: ${lembrete.dataCalendario}</div>
+              ${estaAtrasado ? '<div class="alert-message">⚠️ Este remédio já passou do horário!</div>' : ''}
+            </div>
+            <button class="take-medicine-button" data-acao="tomar" style="${corBotao}">${botaoTexto}</button>
+            <button class="take-medicine-button" style="background-color: #888;" onclick="editar(${indexOriginal})">Editar</button>
+            <button class="take-medicine-button" style="background-color: #555;" onclick="remover(${indexOriginal})">Remover</button>
+          `;
+
+          listaRemedios.appendChild(item);
+        });
+      }
+
+      function renderizarNaoTomados(naoTomadosFiltrados = null) {
+        const listaMostrar = naoTomadosFiltrados || naoTomados;
+        listaNaoTomados.innerHTML = "";
+        
+        if (listaMostrar.length === 0) {
+          tituloNaoTomados.style.display = "none";
+          return;
+        }
+
+        tituloNaoTomados.style.display = "block";
+
+        listaMostrar.forEach((lembrete, index) => {
+          const item = document.createElement("div");
+          item.className = "medicine-item not-taken";
+
+          const pessoaTexto = lembrete.pessoa === 'eu' ? 'Para mim' : 
+                             lembrete.pessoa === 'dependente' ? `Para ${lembrete.nomeDependente}` : 'Não definido';
+
+          item.innerHTML = `
+            <div class="medicine-details">
+              <div class="medicine-name">${lembrete.nome}</div>
+              <div class="medicine-person" style="color: #007bff; font-weight: bold; margin: 5px 0;">${pessoaTexto}</div>
+              <div class="medicine-dosage">${lembrete.descricao || "Sem descrição"}</div>
+              <div class="medicine-schedule">NÃO TOMADO: ${lembrete.comoTomar || "sem instrução"} às ${lembrete.horario} - Data: ${lembrete.dataCalendario}</div>
+              <div class="alert-message">❌ Este remédio não foi tomado no horário correto!</div>
+            </div>
+            <button class="take-medicine-button" style="background-color: #ff5722;" data-acao="tomar-atrasado" data-index="${index}">Tomar Mesmo Assim</button>
+            <button class="take-medicine-button" style="background-color: #555;" onclick="removerNaoTomado(${index})">Remover</button>
+          `;
+
+          listaNaoTomados.appendChild(item);
+        });
+      }
+
+      function renderizarTomados(tomadosFiltrados = null) {
+        const listaMostrar = tomadosFiltrados || tomados;
+        listaTomados.innerHTML = "";
+        if (listaMostrar.length === 0) {
+          tituloTomados.style.display = "none";
+          return;
+        }
+
+        tituloTomados.style.display = "block";
+
+        listaMostrar.forEach((lembrete, index) => {
+          const item = document.createElement("div");
+          item.className = "medicine-item taken";
+
+          const pessoaTexto = lembrete.pessoa === 'eu' ? 'Para mim' : 
+                             lembrete.pessoa === 'dependente' ? `Para ${lembrete.nomeDependente}` : 'Não definido';
+
+          item.innerHTML = `
+            <div class="medicine-details">
+              <div class="medicine-name">${lembrete.nome}</div>
+              <div class="medicine-person" style="color: #007bff; font-weight: bold; margin: 5px 0;">${pessoaTexto}</div>
+              <div class="medicine-dosage">${lembrete.descricao || "Sem descrição"}</div>
+              <div class="medicine-schedule">Tomado: ${lembrete.comoTomar || "sem instrução"} às ${lembrete.horario} - Data: ${lembrete.dataCalendario}</div>
+            </div>
+            <button class="take-medicine-button" style="background-color: #555;" onclick="removerTomado(${index})">Remover</button>
+          `;
+
+          listaTomados.appendChild(item);
+        });
+      }
+
+      // Função para filtrar por pessoa
+      function filtrarPorPessoa() {
+        const filtro = document.getElementById('filtro-pessoa').value;
+        let lembretesFiltrados = lembretes;
+        let tomadosFiltrados = tomados;
+        let naoTomadosFiltrados = naoTomados;
+
+        if (filtro === 'eu') {
+          lembretesFiltrados = lembretes.filter(l => l.pessoa === 'eu');
+          tomadosFiltrados = tomados.filter(l => l.pessoa === 'eu');
+          naoTomadosFiltrados = naoTomados.filter(l => l.pessoa === 'eu');
+        } else if (filtro === 'dependente') {
+          lembretesFiltrados = lembretes.filter(l => l.pessoa === 'dependente');
+          tomadosFiltrados = tomados.filter(l => l.pessoa === 'dependente');
+          naoTomadosFiltrados = naoTomados.filter(l => l.pessoa === 'dependente');
+        }
+
+        renderizarLista(lembretesFiltrados);
+        renderizarTomados(tomadosFiltrados);
+        renderizarNaoTomados(naoTomadosFiltrados);
+      }
+
+      // Event listener para o filtro
+      document.getElementById('filtro-pessoa').addEventListener('change', filtrarPorPessoa);
+
+      listaRemedios.addEventListener("click", function (event) {
+        const target = event.target;
+        const remedioItem = target.closest(".medicine-item");
+        const id = remedioItem?.dataset?.remedioId;
+
+        if (target.dataset.acao === "tomar" && id !== undefined) {
+          const lembreteTomado = lembretes.splice(id, 1)[0];
+          lembreteTomado.dataTomaado = new Date().toISOString(); // Adiciona timestamp
+          tomados.push(lembreteTomado);
+          localStorage.setItem("lembretes", JSON.stringify(lembretes));
+          localStorage.setItem("lembretesTomados", JSON.stringify(tomados));
+          renderizarLista();
+          renderizarTomados();
+          renderizarNaoTomados();
+        }
+      });
+
+      listaNaoTomados.addEventListener("click", function (event) {
+        const target = event.target;
+        const index = target.dataset.index;
+
+        if (target.dataset.acao === "tomar-atrasado" && index !== undefined) {
+          const lembreteTomado = naoTomados.splice(index, 1)[0];
+          lembreteTomado.dataTomaado = new Date().toISOString(); // Adiciona timestamp
+          tomados.push(lembreteTomado);
+          localStorage.setItem("lembretesNaoTomados", JSON.stringify(naoTomados));
+          localStorage.setItem("lembretesTomados", JSON.stringify(tomados));
+          renderizarNaoTomados();
+          renderizarTomados();
+        }
+      });
+
+      window.editar = function (index) {
+        localStorage.setItem("lembreteEditando", index);
+        window.location.href = "criacaoLembrete.html";
+      }
+
+      window.remover = function (index) {
+        if (confirm("Deseja remover este lembrete?")) {
+          lembretes.splice(index, 1);
+          localStorage.setItem("lembretes", JSON.stringify(lembretes));
+          renderizarLista();
+        }
+      }
+
+      window.removerNaoTomado = function (index) {
+        if (confirm("Deseja remover este lembrete não tomado?")) {
+          naoTomados.splice(index, 1);
+          localStorage.setItem("lembretesNaoTomados", JSON.stringify(naoTomados));
+          renderizarNaoTomados();
+        }
+      }
+
+      window.removerTomado = function (index) {
+        if (confirm("Deseja remover este lembrete tomado?")) {
+          tomados.splice(index, 1);
+          localStorage.setItem("lembretesTomados", JSON.stringify(tomados));
+          renderizarTomados();
+        }
+      }
+
+      // Verificar lembretes atrasados e limpar antigos ao carregar a página
+      verificarAtrasados();
+      limparLembretesAntigos();
+      
+      renderizarLista();
+      renderizarTomados();
+      renderizarNaoTomados();
+
+      // Verificar lembretes atrasados a cada minuto
+      setInterval(verificarAtrasados, 60000);
+
+      // Limpar lembretes antigos a cada hora
+      setInterval(limparLembretesAntigos, 3600000);
+
+      // Função para atualizar status do usuário
+      function atualizarStatusUsuario() {
+        const script = document.createElement('script');
+        script.src = './assets/js/login.js';
+        document.head.appendChild(script);
+        
+        script.onload = function() {
+          const usuario = getCurrentUser();
+          const userStatus = document.getElementById('user-status');
+          
+          if (usuario && usuario.nome) {
+            userStatus.innerHTML = `
+              <div class="user-info">
+                <i class="fa-solid fa-user-circle"></i>
+                <span class="user-name">${usuario.nome}</span>
+                <button class="logout-btn" onclick="confirmarLogout()">
+                  <i class="fa-solid fa-sign-out-alt"></i> Sair
+                </button>
+              </div>
+            `;
+          } else {
+            userStatus.innerHTML = `
+              <a class="botao-link" href="/codigo/public/login.html">Login/Inscrição</a>
+            `;
+          }
+        };
+      }
+
+      function confirmarLogout() {
+        if (confirm('Tem certeza que deseja sair?')) {
+          logoutUser();
+        }
+      }
+
+      // Executar ao carregar a página
+      atualizarStatusUsuario();
+    });
+  </script>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-column footer-about">
+        <h4><i class="fa-solid fa-pills"></i> Remedicy</h4>
+        <p>Simplificando o gerenciamento da sua saúde. Lembretes, calendário e mais em um só lugar.</p>
+        <p>Projeto acadêmico da disciplina de Trabalho Interdisciplinar.</p>
+      </div>
+
+      <div class="footer-column footer-links-group">
+        <h4><i class="fa-solid fa-link"></i> Links Rápidos</h4>
+        <ul class="footer-links">
+          <li><a href="/codigo/public/index.html">Página Inicial</a></li>
+          <li><a href="/codigo/public/about.html">Sobre Nós</a></li>
+          <li><a href="/codigo/public/listaLembretes.html">Meus Lembretes</a></li>
+          <li><a href="/codigo/public/ajuda.html">Ajuda e FAQ</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column footer-team">
+        <h4><i class="fa-solid fa-users"></i> Equipe</h4>
+        <ul class="footer-links">
+          <li><a href="#">Cristiano Avelar</a></li>
+          <li><a href="#">Davi Penna</a></li>
+          <li><a href="#">Eduardo Borges</a></li>
+          <li><a href="#">Henrique Cesar</a></li>
+          <li><a href="#">Raphael Dantas</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column footer-contact">
+        <h4><i class="fa-solid fa-headset"></i> Contato</h4>
+        <ul class="footer-links">
+          <li><i class="fa-solid fa-envelope"></i> suporte@remedicy.com.br</li>
+          <li><i class="fa-solid fa-phone"></i> (31) 98887-9261</li>
+          <li><i class="fa-solid fa-map-marker-alt"></i> Contagem, MG - Brasil</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>Remedicy © 2025. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+</body>
+</html>

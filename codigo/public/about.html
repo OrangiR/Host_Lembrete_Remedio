@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="./assets/js/login.js"></script>
+    <style>
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .user-info .user-name {
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="banner"><img src="./assets/images/banner_ti.png" alt=""></div>
+        <div class="barra-info">
+            <nav class="menu">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">Sobre nós</a></li>
+                </ul>
+            </nav>
+            <div id="user-status">
+                <!-- Será preenchido via JavaScript -->
+            </div>
+        </div>
+    </header>
+    <main>
+        <h1>Sobre nós</h1>
+        <p>Página com informações sobre o site.</p>
+    </main>
+<script>
+        function atualizarStatusUsuario() {
+            const usuario = getCurrentUser();
+            const userStatus = document.getElementById('user-status');
+            
+            if (usuario && usuario.nome) {
+                userStatus.innerHTML = `
+                    <div class="user-info">
+                        <i class="fa-solid fa-user-circle"></i>
+                        <span class="user-name">${usuario.nome}</span>
+                        <button class="logout-btn" onclick="confirmarLogout()">
+                            <i class="fa-solid fa-sign-out-alt"></i> Sair
+                        </button>
+                    </div>
+                `;
+            } else {
+                userStatus.innerHTML = `
+                    <a class="botao-link" href="/codigo/public/login.html">Login/Inscrição</a>
+                `;
+            }
+        }
+
+        function confirmarLogout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                logoutUser();
+            }
+        }
+
+        // Executar ao carregar a página
+        atualizarStatusUsuario();
+    </script>
+</body>
+</html>

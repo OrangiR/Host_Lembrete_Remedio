@@ -1,0 +1,96 @@
+{
+  "criacaoLembrete": {
+    "id": "1",
+    "nome": "dipirona",
+    "desc": "10ml",
+    "ingestao": "oral",
+    "dia_semana": "terça-feira",
+    "dtRemedio": "0000-00-00"
+  },
+  "usuarios": [
+    {
+      "id": "1",
+      "login": "admin",
+      "senha": "123",
+      "nome": "Administrador do Sistema",
+      "email": "admin@abc.com"
+    },
+    {
+      "id": "2",
+      "login": "user",
+      "senha": "123",
+      "nome": "Usuario Comum",
+      "email": "user@abc.com"
+    },
+    {
+      "id": "3",
+      "login": "rommel",
+      "senha": "123",
+      "nome": "Rommel",
+      "email": "rommel@gmail.com"
+    },
+    {
+      "id": "7f58",
+      "nome": "Eduardo Borges de Souza",
+      "login": "DUDUH DU PIX",
+      "senha": "123456",
+      "email": "eduardoborgesdesouza4@gmail.com"
+    }
+  ],
+  "eventos": [
+    {
+      "id": "1",
+      "title": "Tomar Dipirona",
+      "start": "2025-06-01T08:00:00"
+    },
+    {
+      "id": "2",
+      "title": "Vitamina D",
+      "start": "2025-06-02T12:00:00"
+    },
+    {
+      "id": "3",
+      "title": "Antibiótico - Dose 2",
+      "start": "2025-06-03T20:00:00"
+    }
+  ],
+  "homeScreen": {
+    "resumo": {
+      "passados": [
+        {
+          "id": 1,
+          "data": "2025-05-20",
+          "titulo": "Tomar Paracetamol",
+          "descricao": "500mg após o almoço",
+          "horario": "13:00"
+        },
+        {
+          "id": 2,
+          "data": "2025-05-20",
+          "titulo": "Aplicar Insulina",
+          "descricao": "Dose de 10 unidades",
+          "horario": "08:00"
+        }
+      ],
+      "hoje": [
+        {
+          "id": 3,
+          "data": "2025-05-21",
+          "titulo": "Tomar Amoxicilina",
+          "descricao": "500mg de 8 em 8 horas",
+          "horario": "08:00"
+        },
+        {
+          "id": 4,
+          "data": "2025-05-21",
+          "titulo": "Tomar Dipirona",
+          "descricao": "10ml via oral",
+          "horario": "12:00"
+        }
+      ],
+      "proximoDia": []
+    }
+  },
+
+  "events": []
+}

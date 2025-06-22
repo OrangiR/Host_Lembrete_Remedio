@@ -1,0 +1,207 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #fdfdfd;
+}
+
+.header {
+  background-color: #b71c1c;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  height: 60px; /* Altura fixa */
+  box-sizing: border-box;
+}
+
+.header img {
+  margin-right: 15px;
+}
+
+/* Classe para controlar o tamanho da logo sem afetar o header */
+.logo-pequena {
+  height: 100px;  /* Tamanho controlado */
+  width: auto;
+  max-height: 140%; /* Garante que nunca ultrapasse o header */
+  object-fit: contain;
+}
+
+.header h1 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 60px); /* Altura da tela menos o header fixo */
+}
+
+.box {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.box h2 {
+  color: #2e7d32;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.btn {
+  background-color: #b71c1c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #a41616;
+}
+
+/* Botões padrão */
+.botao-link {
+    display: inline-block;
+    background: linear-gradient(145deg, #d84343, #ef5350);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.botao-link:hover {
+    background: linear-gradient(145deg, #b71c1c, #e53935);
+    transform: translateY(-2px) scale(1.04);
+}
+
+/* Cabeçalho */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  background-color: #c62828;
+  flex-wrap: wrap;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 120px; /* Define altura fixa */
+}
+
+.img-logo {
+  display: flex;
+  align-items: center;
+  height: 100%; /* Garante que herda a altura do header */
+  padding-left: 20px; /* Empurra ela um pouco pra direita */
+}
+
+.img-logo img {
+  /* cresce proporcionalmente */
+  height: 100%;             /* ocupa toda a altura do header */
+  max-height: 170px;        /* segurança: nunca passa disso */
+  width: auto;              /* mantém proporção natural  */
+  margin: 0;                /* centralizada verticalmente pelo flex */
+}
+
+
+/* Rodapé */
+.site-footer {
+    background-color: #c62828;
+    color: white;
+    padding: 40px 0;
+    font-family: Helvetica, Arial, sans-serif;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-column {
+    flex: 1;
+    min-width: 240px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.footer-column h4 {
+    color: #ffcc80;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 204, 128, 0.5);
+    padding-bottom: 10px;
+}
+
+.footer-column h4 i {
+    margin-right: 10px;
+}
+
+.footer-column p {
+    font-size: 0.9em;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 8px;
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-size: 0.9em;
+}
+
+.footer-links a:hover {
+    color: #ffcc80;
+    text-decoration: underline;
+}
+
+.footer-column .fa-solid {
+    margin-right: 8px;
+    color: #ffcc80;
+}
+
+.social-icons a {
+    color: #fff;
+    font-size: 1.5em;
+    margin-right: 15px;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: #ffcc80;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid #b71c1c;
+    margin-top: 20px;
+    font-size: 0.8em;
+    background-color: #a31d1d;
+}

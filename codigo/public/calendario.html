@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calendário com Navegação</title>
+  <link rel="stylesheet" href="./assets/css/calendario.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet">
+  <style>
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+    }
+
+    .user-info .user-name {
+      font-weight: bold;
+    }
+
+    .logout-btn {
+      background: #d32f2f;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 0.8em;
+      transition: background-color 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #b71c1c;
+    }
+  </style>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.js"></script>
+
+</head>
+<body>
+ <header>
+    <div class="img-logo">
+        <a href="/codigo/public/index.html">
+            <img src="/docs/images/logo.remed.jpg" alt="Logotipo da Remedicy" />
+        </a>
+        <h1 class="text-logo">Remedicy</h1>
+    </div>
+    <nav class="infos-mais">
+        <div id="user-status">
+          <!-- Será preenchido via JavaScript -->
+        </div>
+        <a class="botao-link" href="/codigo/public/about.html">Sobre nós</a>
+        <a class="botao-link" href="/codigo/public/ajuda.html">Suporte</a>
+    </nav>
+</header>
+
+  <h1 style="text-align: center;">Lembretes de Remédios</h1>
+
+  <div class="container">
+    <div id="calendar"></div>
+
+    <div class="filtros">
+        <div class="busca-remedios">
+          <h3>Buscar Remédio</h3>
+          <input type="text" id="pesquisaRemedio" placeholder="Digite o nome do remédio" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+          <ul id="resultadoBusca"></ul>
+        </div>
+
+        <div class="filtro-pessoa">
+          <h3>Filtrar por Pessoa</h3>
+          <div id="checkboxesPessoa">
+            <!-- Checkboxes de pessoa serão gerados aqui -->
+          </div>
+        </div>
+
+        <h3>Filtrar Remédios</h3>
+        <div id="checkboxesFiltro">
+          <!-- Checkboxes serão gerados aqui -->
+        </div>
+      </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Pega os lembretes do localStorage
+      const lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
+
+      // Função para extrair nomes únicos
+      function nomesUnicos() {
+        const nomes = lembretes.map(l => l.nome);
+        return [...new Set(nomes)].sort(); // retorna array ordenado sem duplicatas
+      }
+
+       // Função para extrair nomes de pessoas únicas
+      function pessoasUnicas() {
+        const pessoas = lembretes.map(l => l.pessoa);
+        return [...new Set(pessoas)].sort(); // retorna array ordenado sem duplicatas
+      }
+
+      // Gera checkboxes de filtro por pessoa dinamicamente
+      function gerarCheckboxesPessoa() {
+        const container = document.getElementById('checkboxesPessoa');
+        container.innerHTML = ''; // limpa o container
+
+        pessoasUnicas().forEach(pessoa => {
+          const label = document.createElement('label');
+          label.innerHTML = `<input type="checkbox" class="filtro-pessoa" value="${pessoa}" checked> ${pessoa}`;
+          container.appendChild(label);
+        });
+      }
+
+      // Gera checkboxes de filtro dinamicamente
+      function gerarCheckboxes() {
+        const container = document.getElementById('checkboxesFiltro');
+        container.innerHTML = ''; // limpa o container
+
+        nomesUnicos().forEach(nome => {
+          const label = document.createElement('label');
+          label.innerHTML = `<input type="checkbox" class="filtro" value="${nome}" checked> ${nome}`;
+          container.appendChild(label);
+        });
+      }
+
+      // Função para transformar lembretes em eventos do FullCalendar, já filtrando por nomes, pessoas e busca
+      function getEventosFiltrados(filtroNomes, filtroPessoas, buscaTexto) {
+        return lembretes
+          .filter(l =>
+            filtroNomes.includes(l.nome) &&
+            filtroPessoas.includes(l.pessoa) &&
+            l.nome.toLowerCase().includes(buscaTexto.toLowerCase())
+          )
+          .map(lembrete => ({
+            title: lembrete.nome,
+            start: lembrete.dataCalendario || "2025-01-01",
+            descricao: lembrete.descricao,
+            comoTomar: lembrete.comoTomar,
+            horario: lembrete.horario,
+            diasSelecionados: lembrete.diasSelecionados,
+            pessoa: lembrete.pessoa // inclui a pessoa no evento
+          }));
+      }
+
+      // Inicializa checkboxes e calendário
+      gerarCheckboxes();
+      gerarCheckboxesPessoa();
+
+      let eventosAtuais = getEventosFiltrados(
+        nomesUnicos(),
+        pessoasUnicas(),
+        ''
+      );
+
+      $('#calendar').fullCalendar({
+        locale: 'pt-br',
+        defaultView: 'month',
+        editable: false,
+        eventLimit: true,
+        events: eventosAtuais,
+        eventClick: function (event) {
+          alert(
+            `💊 Remédio: ${event.title}\n` +
+            `👤 Pessoa: ${event.pessoa}\n` +
+            `📃 Descrição: ${event.descricao || '—'}\n` +
+            `💡 Como tomar: ${event.comoTomar || '—'}\n` +
+            `⏰ Horário: ${event.horario || '—'}\n` +
+            `📆 Data: ${moment(event.start).format('DD/MM/YYYY')}\n` +
+            `📌 Dias selecionados: ${event.diasSelecionados || '—'}`
+          );
+        }
+      });
+
+      // Passa os meses do calendário apertando as setinhas do teclado
+      document.addEventListener('keydown', function(event) {
+        if(event.key === 'ArrowLeft') {
+          $('#calendar').fullCalendar('prev'); // mês anterior
+        } else if(event.key === 'ArrowRight') {
+          $('#calendar').fullCalendar('next'); // próximo mês
+        }
+      });
+
+      // Atualiza eventos e lista de busca
+      function atualizarFiltro() {
+        const filtroNomes = Array.from(document.querySelectorAll('.filtro:checked')).map(cb => cb.value);
+        const filtroPessoas = Array.from(document.querySelectorAll('.filtro-pessoa:checked')).map(cb => cb.value);
+        const buscaTexto = document.getElementById('pesquisaRemedio').value || '';
+
+        const eventosFiltrados = getEventosFiltrados(filtroNomes, filtroPessoas, buscaTexto);
+
+        $('#calendar').fullCalendar('removeEvents');
+        $('#calendar').fullCalendar('addEventSource', eventosFiltrados);
+        $('#calendar').fullCalendar('rerenderEvents');
+
+        atualizarResultadosBusca(buscaTexto, filtroNomes, filtroPessoas);
+      }
+
+      // Atualiza lista de sugestões da busca
+      function atualizarResultadosBusca(buscaTexto, filtroNomes, filtroPessoas) {
+        const lista = document.getElementById('resultadoBusca');
+        lista.innerHTML = '';
+
+        if (!buscaTexto) return;
+
+        const resultados = lembretes.filter(l =>
+          filtroNomes.includes(l.nome) &&
+          filtroPessoas.includes(l.pessoa) &&
+          l.nome.toLowerCase().includes(buscaTexto.toLowerCase())
+        );
+
+       resultados.forEach(lembrete => {
+          const li = document.createElement('li');
+
+          let dataFormatada = '—';
+          if (lembrete.dataCalendario) {
+            dataFormatada = moment(lembrete.dataCalendario).format('DD/MM/YYYY');
+          }
+
+          let horarioFormatado = lembrete.horario || '—';
+
+          li.innerHTML = `
+            <strong>💊 ${lembrete.nome}</strong><br>
+            👤 <strong>Pessoa:</strong> ${lembrete.pessoa}<br>
+            🗓 <strong>Data:</strong> ${dataFormatada} <br>
+            ⏰ <strong>Horário:</strong> ${horarioFormatado}
+          `;
+
+          li.addEventListener('click', () => {
+            alert(
+              `💊 Remédio: ${lembrete.nome}\n` +
+              `👤 Pessoa: ${lembrete.pessoa}\n` +
+              `📃 Descrição: ${lembrete.descricao || '—'}\n` +
+              `💡 Como tomar: ${lembrete.comoTomar || '—'}\n` +
+              `⏰ Horário: ${horarioFormatado}\n` +
+              `📆 Data: ${dataFormatada}`
+            );
+          });
+
+          lista.appendChild(li);
+        });
+      }
+
+      // Escuta eventos nos checkboxes e input de busca
+      document.getElementById('checkboxesFiltro').addEventListener('change', atualizarFiltro);
+      document.getElementById('checkboxesPessoa').addEventListener('change', atualizarFiltro);
+      document.getElementById('pesquisaRemedio').addEventListener('input', atualizarFiltro);
+
+      // Inicializa a lista de resultados vazia
+      atualizarResultadosBusca('', nomesUnicos(), pessoasUnicas());
+
+      // Função para atualizar status do usuário
+      function atualizarStatusUsuario() {
+        const script = document.createElement('script');
+        script.src = './assets/js/login.js';
+        document.head.appendChild(script);
+
+        script.onload = function() {
+          const usuario = getCurrentUser();
+          const userStatus = document.getElementById('user-status');
+
+          if (usuario && usuario.nome) {
+            userStatus.innerHTML = `
+              <div class="user-info">
+                <i class="fa-solid fa-user-circle"></i>
+                <span class="user-name">${usuario.nome}</span>
+                <button class="logout-btn" onclick="confirmarLogout()">
+                  <i class="fa-solid fa-sign-out-alt"></i> Sair
+                </button>
+              </div>
+            `;
+          } else {
+            userStatus.innerHTML = `
+              <a class="botao-link" href="/codigo/public/login.html">Login/Inscrição</a>
+            `;
+          }
+        };
+      }
+
+      function confirmarLogout() {
+        if (confirm('Tem certeza que deseja sair?')) {
+          logoutUser();
+        }
+      }
+
+      // Executar ao carregar a página
+      atualizarStatusUsuario();
+    });
+  </script>
+
+     <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-column footer-about">
+                <h4><i class="fa-solid fa-pills"></i> Remedicy</h4>
+                <p>Simplificando o gerenciamento da sua saúde. Lembretes, calendário e mais em um só lugar.</p>
+                <p>Projeto acadêmico da disciplina de Trabalho Interdisciplinar.</p>
+            </div>
+
+            <div class="footer-column footer-links-group">
+                <h4><i class="fa-solid fa-link"></i> Links Rápidos</h4>
+                <ul class="footer-links">
+                    <li><a href="/codigo/public/index.html">Página Inicial</a></li>
+                    <li><a href="/codigo/public/about.html">Sobre Nós</a></li>
+                    <li><a href="/codigo/public/listaLembretes.html">Meus Lembretes</a></li>
+                    <li><a href="/codigo/public/ajuda.html">Ajuda e FAQ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column footer-team">
+                <h4><i class="fa-solid fa-users"></i> Equipe</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Cristiano Avelar</a></li>
+                    <li><a href="#">Davi Penna</a></li>
+                    <li><a href="#">Eduardo Borges</a></li>
+                    <li><a href="#">Henrique Cesar</a></li>
+                    <li><a href="#">Raphael Dantas</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column footer-contact">
+                <h4><i class="fa-solid fa-headset"></i> Contato</h4>
+                <ul class="footer-links">
+                    <li><i class="fa-solid fa-envelope"></i> suporte@remedicy.com.br</li>
+                    <li><i class="fa-solid fa-phone"></i> (31) 98887-9261</li>
+                    <li><i class="fa-solid fa-map-marker-alt"></i> Contagem, MG - Brasil</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>Remedicy © 2025. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

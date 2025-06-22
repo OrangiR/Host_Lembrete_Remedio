@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Suporte - Remedicy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="./assets/css/ajuda.css" />
+    <style>
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .user-info .user-name {
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+ <header>
+        <div class="img-logo">
+            <a href="/">
+                <img src="/docs/images/logo.remed.jpg" alt="Logotipo da Remedicy" />
+            </a>
+            <h1 class="text-logo">Remedicy</h1>
+        </div>
+        <nav class="infos-mais">
+            <div id="user-status">
+              <!-- Será preenchido via JavaScript -->
+            </div>
+            <a class="botao-link" href="/codigo/public/about.html">Sobre nós</a>
+            <a class="botao-link" href="/codigo/public/ajuda.html">Suporte</a>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <section class="caixa-esquerda">
+            <h2>Precisa de Ajuda?</h2>
+            <p>Se você tiver alguma dúvida, problema ou sugestão, por favor, entre em contato conosco através do formulário ao lado. Nossa equipe de suporte está pronta para ajudar!</p>
+            <p>Aqui estão alguns tópicos comuns que podem ter respostas em nossa seção de Perguntas Frequentes (FAQ) em breve:</p>
+            <ul>
+                <li>Como criar um novo lembrete?</li>
+                <li>Como editar ou excluir um lembrete existente?</li>
+                <li>O que fazer se eu não receber notificações de lembretes?</li>
+                <li>Como funciona o calendário de lembretes?</li>
+                <li>Posso personalizar os sons de notificação?</li>
+            </ul>
+            <p>Agradecemos o seu feedback, pois ele nos ajuda a melhorar continuamente o Remedicy.</p>
+        </section>
+
+        <section class="caixa-direita">
+            <h3>Fale Conosco</h3>
+            <div class="info-form">
+                <p>Envie-nos uma mensagem e responderemos o mais breve possível.</p>
+            </div>
+
+            <form id="formulario-contato">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required />
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="seu.email@example.com" required />
+
+                <label for="mensagem">Mensagem</label>
+                <textarea id="mensagem" name="mensagem" rows="5" placeholder="Descreva sua dúvida ou problema..." required></textarea>
+
+                <button type="submit" class="submit-button">Enviar Mensagem</button>
+                <div id="form-status-message" class="status-message"></div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-column footer-about">
+                <h4><i class="fa-solid fa-pills"></i> Remedicy</h4>
+                <p>Simplificando o gerenciamento da sua saúde.</p>
+            </div>
+
+            <div class="footer-column footer-links-group">
+                <h4><i class="fa-solid fa-link"></i> Links Rápidos</h4>
+                <ul class="footer-links">
+                    <li><a href="/codigo/public/index.html">Página Inicial</a></li>
+                    <li><a href="/codigo/public/about.html">Sobre Nós</a></li>
+                    <li><a href="/codigo/public/listaLembretes.html">Meus Lembretes</a></li>
+                    <li><a href="/codigo/public/ajuda.html">Ajuda e FAQ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column footer-team">
+                <h4><i class="fa-solid fa-users"></i> Equipe</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Cristiano Avelar</a></li>
+                    <li><a href="#">Davi Penna</a></li>
+                    <li><a href="#">Eduardo Borges</a></li>
+                    <li><a href="#">Henrique Cesar</a></li>
+                    <li><a href="#">Raphael Dantas</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column footer-contact">
+                <h4><i class="fa-solid fa-headset"></i> Contato</h4>
+                <ul class="footer-links">
+                    <li><i class="fa-solid fa-envelope"></i> suporte@remedicy.com.br</li>
+                    <li><i class="fa-solid fa-phone"></i> (31) 98887-9261</li>
+                    <li><i class="fa-solid fa-map-marker-alt"></i> Contagem, MG - Brasil</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>Remedicy © 2025. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('formulario-contato').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+
+            const form = event.target;
+            const statusMessage = document.getElementById('form-status-message');
+            const submitButton = form.querySelector('.submit-button');
+
+            // Limpa mensagens anteriores
+            statusMessage.textContent = '';
+            statusMessage.className = 'status-message'; // Reset classes
+
+            // Coleta os dados do formulário
+            const formData = {
+                nome: form.nome.value,
+                email: form.email.value,
+                mensagem: form.mensagem.value,
+                timestamp: new Date().toISOString() // Adiciona um timestamp
+            };
+
+            // Simulação de envio para um backend
+            // Em um ambiente real, você faria uma requisição Fetch/XMLHttpRequest para um endpoint do seu servidor.
+            // Exemplo: fetch('/api/submit-contact', { method: 'POST', body: JSON.stringify(formData), headers: {'Content-Type': 'application/json'} })
+
+            submitButton.disabled = true; // Desabilita o botão enquanto envia
+            submitButton.textContent = 'Enviando...';
+
+            console.log('Dados a serem "salvos":', formData); // Mostra no console o que seria enviado
+
+            // Simula um atraso de rede
+            setTimeout(() => {
+                // Aqui você faria a lógica de verificar a resposta do servidor
+                const success = true; // Altere para false para simular um erro
+
+                if (success) {
+                    statusMessage.textContent = 'Mensagem enviada com sucesso! Em breve entraremos em contato.';
+                    statusMessage.classList.add('success');
+                    form.reset(); // Limpa o formulário após o sucesso
+                } else {
+                    statusMessage.textContent = 'Ocorreu um erro ao enviar sua mensagem. Por favor, tente novamente mais tarde.';
+                    statusMessage.classList.add('error');
+                }
+                submitButton.disabled = false; // Reabilita o botão
+                submitButton.textContent = 'Enviar Mensagem';
+            }, 2000); // Simula 2 segundos de carregamento
+        });
+
+        // Função para atualizar status do usuário
+        function atualizarStatusUsuario() {
+            const script = document.createElement('script');
+            script.src = './assets/js/login.js';
+            document.head.appendChild(script);
+            
+            script.onload = function() {
+                const usuario = getCurrentUser();
+                const userStatus = document.getElementById('user-status');
+                
+                if (usuario && usuario.nome) {
+                    userStatus.innerHTML = `
+                        <div class="user-info">
+                            <i class="fa-solid fa-user-circle"></i>
+                            <span class="user-name">${usuario.nome}</span>
+                            <button class="logout-btn" onclick="confirmarLogout()">
+                                <i class="fa-solid fa-sign-out-alt"></i> Sair
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    userStatus.innerHTML = `
+                        <a class="botao-link" href="/codigo/public/login.html">Login/Inscrição</a>
+                    `;
+                }
+            };
+        }
+
+        function confirmarLogout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                logoutUser();
+            }
+        }
+
+        // Executar ao carregar a página
+        atualizarStatusUsuario();
+    </script>
+</body>
+</html>

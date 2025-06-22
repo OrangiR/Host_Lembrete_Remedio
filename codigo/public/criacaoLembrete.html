@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criação de Lembrete</title>
+  <link rel="stylesheet" href="./assets/css/criacaoLembrete.css">
+
+</head>
+<body>
+   <header>
+        <div class="img-logo">
+            <a href="/codigo/public/index.html">
+                <img src="/docs/images/logo.remed.jpg" alt="Logotipo da Remedicy" />
+            </a>
+            <h1 class="text-logo">Remedicy</h1>
+        </div>
+        <nav class="infos-mais">
+            <a class="botao-link" href="/codigo/public/login.html">Login/Inscrição</a>
+            <a class="botao-link" href="/codigo/public/about.html">Sobre nós</a>
+            <a class="botao-link" href="/codigo/public/ajuda.html">Suporte</a>
+        </nav>
+    </header>
+
+<main>
+  <form class="form-container" method="POST">
+    <div class="form-content">
+      <div class="form-left">
+        <input type="text" name="nome_remedio" placeholder="nome do remédio*" required>
+        <input type="text" name="descricao" placeholder="descrição">
+        <input type="text" name="como_tomar" placeholder="Como tomar">
+        <select name="pessoa" required>
+          <option value="">Para quem é o remédio?*</option>
+          <option value="eu">Para mim</option>
+          <option value="dependente">Para meu dependente</option>
+        </select>
+        <input type="text" name="nome_dependente" placeholder="Nome do dependente" style="display: none;">
+        <input type="time" name="horario" placeholder="Horário*" required>
+        <input type="date" id="data_calendario" placeholder="Escolha a data">
+      </div>
+
+      <div class="form-right">
+        <div id="calendario-container">
+          <div id="calendario-header">
+            <button type="button" id="mes-anterior">&lt;</button>
+            <span id="mes-ano"></span>
+            <button type="button" id="mes-posterior">&gt;</button>
+          </div>
+          <div id="dias-semana">
+            <div>D</div>
+            <div>S</div>
+            <div>T</div>
+            <div>Q</div>
+            <div>Q</div>
+            <div>S</div>
+            <div>S</div>
+          </div>
+          <div id="dias-calendario"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <button type="button" class="btn-voltar" onclick="history.back()">Voltar</button>
+      <button type="submit" class="btn-salvar">Salvar</button>
+    </div>
+  </form>
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const lembreteEditando = localStorage.getItem("lembreteEditando");
+    const selectPessoa = document.querySelector('[name="pessoa"]');
+    const inputDependente = document.querySelector('[name="nome_dependente"]');
+
+    // Mostrar/ocultar campo do dependente
+    selectPessoa.addEventListener('change', function() {
+      if (this.value === 'dependente') {
+        inputDependente.style.display = 'block';
+        inputDependente.required = true;
+      } else {
+        inputDependente.style.display = 'none';
+        inputDependente.required = false;
+        inputDependente.value = '';
+      }
+    });
+
+    if (lembreteEditando !== null) {
+      const lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
+      const lembrete = lembretes[lembreteEditando];
+      if (lembrete) {
+        document.querySelector('[name="nome_remedio"]').value = lembrete.nome;
+        document.querySelector('[name="descricao"]').value = lembrete.descricao;
+        document.querySelector('[name="como_tomar"]').value = lembrete.comoTomar;
+        document.querySelector('[name="pessoa"]').value = lembrete.pessoa || "eu";
+        if (lembrete.pessoa === 'dependente' && lembrete.nomeDependente) {
+          inputDependente.style.display = 'block';
+          inputDependente.required = true;
+          inputDependente.value = lembrete.nomeDependente;
+        }
+        document.querySelector('[name="horario"]').value = lembrete.horario;
+        document.getElementById('data_calendario').value = lembrete.dataCalendario || "";
+      }
+    } else {
+      // Campos vazios para novo lembrete
+      document.querySelector('[name="nome_remedio"]').value = "";
+      document.querySelector('[name="descricao"]').value = "";
+      document.querySelector('[name="como_tomar"]').value = "";
+      document.querySelector('[name="pessoa"]').value = "";
+      document.querySelector('[name="horario"]').value = "";
+      document.getElementById('data_calendario').value = "";
+    }
+  });
+
+  document.querySelector(".form-container").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const nome = document.querySelector('[name="nome_remedio"]').value.trim();
+    const descricao = document.querySelector('[name="descricao"]').value.trim();
+    const comoTomar = document.querySelector('[name="como_tomar"]').value.trim();
+    const pessoa = document.querySelector('[name="pessoa"]').value;
+    const nomeDependente = document.querySelector('[name="nome_dependente"]').value.trim();
+    const horario = document.querySelector('[name="horario"]').value.trim();
+    const dataCalendario = document.getElementById('data_calendario').value;
+
+    if (!nome || !horario || !dataCalendario || !pessoa) {
+      alert("Preencha os campos obrigatórios: nome do remédio, pessoa, horário e data.");
+      return;
+    }
+
+    if (pessoa === 'dependente' && !nomeDependente) {
+      alert("Preencha o nome do dependente.");
+      return;
+    }
+
+    const lembrete = {
+      nome,
+      descricao,
+      comoTomar,
+      pessoa,
+      nomeDependente: pessoa === 'dependente' ? nomeDependente : '',
+      horario,
+      diasSelecionados: "",
+      dataCalendario
+    };
+
+    let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
+    const editando = localStorage.getItem("lembreteEditando");
+
+    if (editando !== null) {
+      lembretes[editando] = lembrete;
+      localStorage.removeItem("lembreteEditando");
+    } else {
+      lembretes.push(lembrete);
+    }
+
+    localStorage.setItem("lembretes", JSON.stringify(lembretes));
+    window.location.href = "listaLembretes.html";
+  });
+
+  // Calendário
+  const dataInput = document.getElementById("data_calendario");
+  const mesAno = document.getElementById("mes-ano");
+  const diasCalendario = document.getElementById("dias-calendario");
+  const btnAnterior = document.getElementById("mes-anterior");
+  const btnPosterior = document.getElementById("mes-posterior");
+
+  let dataAtual = new Date();
+
+  function renderizarCalendario(data) {
+    const ano = data.getFullYear();
+    const mes = data.getMonth();
+    const primeiroDia = new Date(ano, mes, 1).getDay();
+    const ultimoDia = new Date(ano, mes + 1, 0).getDate();
+
+    mesAno.textContent = data.toLocaleString("pt-BR", {
+      month: "long",
+      year: "numeric"
+    });
+
+    diasCalendario.innerHTML = "";
+
+    for (let i = 0; i < primeiroDia; i++) {
+      diasCalendario.innerHTML += `<div class="vazio"></div>`;
+    }
+
+    for (let dia = 1; dia <= ultimoDia; dia++) {
+      const dataCompleta = new Date(ano, mes, dia);
+      const dataFormatada = dataCompleta.toISOString().split("T")[0];
+      diasCalendario.innerHTML += `<div class="dia" data-data="${dataFormatada}">${dia}</div>`;
+    }
+
+    document.querySelectorAll(".dia").forEach((el) => {
+      el.addEventListener("click", () => {
+        const dataSelecionada = el.getAttribute("data-data");
+        dataInput.value = dataSelecionada;
+      });
+    });
+  }
+
+  btnAnterior.addEventListener("click", () => {
+    dataAtual.setMonth(dataAtual.getMonth() - 1);
+    renderizarCalendario(dataAtual);
+  });
+
+  btnPosterior.addEventListener("click", () => {
+    dataAtual.setMonth(dataAtual.getMonth() + 1);
+    renderizarCalendario(dataAtual);
+  });
+
+  renderizarCalendario(dataAtual);
+</script>
+     <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-column footer-about">
+                    <h4><i class="fa-solid fa-pills"></i> Remedicy</h4>
+                    <p>Simplificando o gerenciamento da sua saúde. Lembretes, calendário e mais em um só lugar.</p>
+                    <p>Projeto acadêmico da disciplina de Trabalho Interdisciplinar.</p>
+                </div>
+
+                <div class="footer-column footer-links-group">
+                    <h4><i class="fa-solid fa-link"></i> Links Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="/codigo/public/index.html">Página Inicial</a></li>
+                        <li><a href="/codigo/public/about.html">Sobre Nós</a></li>
+                        <li><a href="/codigo/public/listaLembretes.html">Meus Lembretes</a></li>
+                        <li><a href="/codigo/public/ajuda.html">Ajuda e FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column footer-team">
+                    <h4><i class="fa-solid fa-users"></i> Equipe</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Cristiano Avelar</a></li>
+                        <li><a href="#">Davi Penna</a></li>
+                        <li><a href="#">Eduardo Borges</a></li>
+                        <li><a href="#">Henrique Cesar</a></li>
+                        <li><a href="#">Raphael Dantas</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column footer-contact">
+                    <h4><i class="fa-solid fa-headset"></i> Contato</h4>
+                    <ul class="footer-links">
+                        <li><i class="fa-solid fa-envelope"></i> suporte@remedicy.com.br</li>
+                        <li><i class="fa-solid fa-phone"></i> (31) 98887-9261</li>
+                        <li><i class="fa-solid fa-map-marker-alt"></i> Contagem, MG - Brasil</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>Remedicy © 2025. Todos os direitos reservados.</p>
+            </div>
+        </footer>
+</body>
+</html>
